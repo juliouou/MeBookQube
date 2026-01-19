@@ -1,1 +1,36 @@
-{"generator":"Code Snippets v3.9.3","date_created":"2026-01-19 13:12","snippets":[{"id":11,"name":"SistemaCuentaMeBook","code":"function mebook_render_login_register_panel($redirect_to = '') {\n    \n    \/\/ 1. L\u00d3GICA DE LOGIN\n    if ( isset($_POST['mebook_login_submit']) ) {\n        $creds = array(\n            'user_login'    => sanitize_text_field($_POST['log_user']),\n            'user_password' => $_POST['log_pass'],\n            'remember'      => true\n        );\n        $user = wp_signon( $creds, false );\n        if ( is_wp_error($user) ) {\n            echo '<div class=\"bg-red-100 text-red-700 p-3 text-center\">\u274c Usuario o contrase\u00f1a incorrectos.<\/div>';\n        } else {\n            echo '<script>window.location.reload();<\/script>'; \/\/ Recargar para entrar\n            exit;\n        }\n    }\n\n    \/\/ 2. L\u00d3GICA DE REGISTRO\n    if ( isset($_POST['mebook_register_submit']) ) {\n        $username = sanitize_text_field($_POST['reg_user']);\n        $email    = sanitize_email($_POST['reg_email']);\n        $password = $_POST['reg_pass'];\n        \n        if( username_exists($username) || email_exists($email) ) {\n            echo '<div class=\"bg-red-100 text-red-700 p-3 text-center\">\u274c El usuario o correo ya existe.<\/div>';\n        } else {\n            $user_id = wp_create_user($username, $password, $email);\n            if ( !is_wp_error($user_id) ) {\n                wp_set_current_user($user_id);\n                wp_set_auth_cookie($user_id);\n                \/\/ REDIRECCI\u00d3N AL PERFIL (Lo que pediste)\n                $destino = home_url('\/completar-perfil');\n                echo \"<script>window.location.href = '\".$destino.\"';<\/script>\";\n                exit;\n            }\n        }\n    }\n\n    \/\/ 3. EL HTML DEL PANEL\n    ob_start();\n    ?>\n    <script src=\"https:\/\/cdn.tailwindcss.com\"><\/script>\n    <link href=\"https:\/\/fonts.googleapis.com\/css2?family=Lexend:wght@300;400;500;600;700&display=swap\" rel=\"stylesheet\"\/>\n    \n    <div class=\"max-w-4xl mx-auto p-6 font-['Lexend'] my-10\">\n        <div class=\"text-center mb-10\">\n            <h2 class=\"text-3xl font-bold text-[#004c42] mb-2\">\u00danete a MEBOOK \ud83d\udcda<\/h2>\n            <p class=\"text-gray-500\">Para continuar, necesitas identificarte.<\/p>\n        <\/div>\n\n        <div class=\"grid grid-cols-1 md:grid-cols-2 gap-8 bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100\">\n            \n            <div class=\"p-8 md:p-10 bg-gray-50\">\n                <h3 class=\"text-xl font-bold text-[#101817] mb-6\">Inicia Sesi\u00f3n<\/h3>\n                <form method=\"post\" class=\"space-y-4\">\n                    <div>\n                        <label class=\"block text-xs font-bold text-gray-500 uppercase mb-1\">Usuario o Correo<\/label>\n                        <input type=\"text\" name=\"log_user\" required class=\"w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#004c42] bg-white text-gray-900\">\n                    <\/div>\n                    <div>\n                        <label class=\"block text-xs font-bold text-gray-500 uppercase mb-1\">Contrase\u00f1a<\/label>\n                        <input type=\"password\" name=\"log_pass\" required class=\"w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#004c42] bg-white text-gray-900\">\n                    <\/div>\n                    <button type=\"submit\" name=\"mebook_login_submit\" class=\"w-full bg-[#004c42] hover:bg-[#003831] text-white font-bold py-3 rounded-xl shadow-md transition-all\">\n                        Entrar ahora\n                    <\/button>\n                <\/form>\n            <\/div>\n\n            <div class=\"p-8 md:p-10 relative overflow-hidden text-white flex flex-col justify-center\" style=\"background: linear-gradient(135deg, #004c42 0%, #002e28 100%);\">\n                <div class=\"relative z-10\">\n                    <h3 class=\"text-xl font-bold mb-2\">\u00bfEres nuevo?<\/h3>\n                    <p class=\"text-green-100 text-sm mb-6\">Crea tu cuenta en segundos y empieza a intercambiar libros en Loja.<\/p>\n                    \n                    <form method=\"post\" class=\"space-y-4\">\n                        <input type=\"text\" name=\"reg_user\" placeholder=\"Nombre de Usuario\" required class=\"w-full px-4 py-3 rounded-xl border-none bg-white\/90 text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-green-300 transition-all\">\n                        \n                        <input type=\"email\" name=\"reg_email\" placeholder=\"Correo Electr\u00f3nico\" required class=\"w-full px-4 py-3 rounded-xl border-none bg-white\/90 text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-green-300 transition-all\">\n                        \n                        <input type=\"password\" name=\"reg_pass\" placeholder=\"Crea una contrase\u00f1a\" required class=\"w-full px-4 py-3 rounded-xl border-none bg-white\/90 text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-green-300 transition-all\">\n                        \n                        <button type=\"submit\" name=\"mebook_register_submit\" class=\"w-full bg-white text-[#004c42] font-bold py-3 rounded-xl shadow-md hover:bg-green-50 transition-all mt-2\">\n                            \ud83d\ude80 Crear Cuenta Gratis\n                        <\/button>\n                    <\/form>\n                <\/div>\n                <div class=\"absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white opacity-10 rounded-full\"><\/div>\n                <div class=\"absolute bottom-0 left-0 -ml-10 -mb-10 w-40 h-40 bg-white opacity-10 rounded-full\"><\/div>\n            <\/div>\n\n        <\/div>\n    <\/div>\n    <?php\n    return ob_get_clean();\n}","modified":"2026-01-19 02:15:42","revision":"1"}]}
+<?php
+// Snippet Name: Cuenta MeBook Unificada
+// Shortcode: [mebook_perfil]
+
+add_shortcode('mebook_perfil', 'mebook_control_total_cuenta');
+
+function mebook_control_total_cuenta() {
+    global $wpdb;
+
+    // PROCESAR LOGIN
+    if ( isset($_POST['mebook_login_submit']) ) {
+        $creds = array(
+            'user_login'    => sanitize_text_field($_POST['log_user']),
+            'user_password' => $_POST['log_pass'],
+            'remember'      => true
+        );
+        $user = wp_signon( $creds, false );
+        if ( !is_wp_error($user) ) {
+            echo '<script>window.location.reload();</script>';
+            exit;
+        }
+    }
+
+    // RENDERIZADO
+    if (!is_user_logged_in()) {
+        // Formulario de Login/Registro
+        return '<div>Formulario de Login...</div>';
+    } else {
+        // Dashboard del Usuario
+        $current_user = wp_get_current_user();
+        $user_id = $current_user->ID;
+        $mis_libros = $wpdb->get_results("SELECT * FROM libros WHERE usuario_id = $user_id");
+        
+        return '<div>Bienvenido ' . esc_html($current_user->display_name) . '</div>';
+    }
+}
